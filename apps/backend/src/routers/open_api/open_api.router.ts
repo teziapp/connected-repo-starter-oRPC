@@ -1,7 +1,6 @@
-import { openApiAuthProcedure } from "@backend/procedures/open_api_auth.procedure";
 import { openApiPublicProcedure } from "@backend/procedures/open_api_public.procedure";
-import { teamSelectAllZod } from "@connected-repo/zod-schemas/team.zod";
 import * as z from "zod";
+import { teamRouter } from "./team.router";
 
 // Health check endpoint for OpenAPI (public - no auth required)
 export const healthCheck = openApiPublicProcedure
@@ -19,17 +18,9 @@ export const healthCheck = openApiPublicProcedure
 		};
 	});
 
-// Example authenticated endpoint using API key
-export const getTeamInfo = openApiAuthProcedure
-	.route({ method: "GET", path: "/team/info" })
-	.output(
-		teamSelectAllZod
-	)
-	.handler(async ({ context: { team } }) => {
-		return team;
-	});
-
 export const openApiRouter = {
 	health: healthCheck,
-	teamInfo: getTeamInfo,
+	v1: {
+		team: teamRouter,
+	},
 };
