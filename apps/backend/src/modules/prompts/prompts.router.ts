@@ -1,13 +1,13 @@
 import { db } from "@backend/db/db";
-import { publicProcedure } from "@backend/procedures/public.procedure";
+import { rpcPublicProcedure } from "@backend/procedures/public.procedure";
 import {
-	promptGetActiveZod,
-	promptGetByIdZod,
+    promptGetActiveZod,
+    promptGetByIdZod,
 } from "@connected-repo/zod-schemas/prompt.zod";
 import { ORPCError } from "@orpc/server";
 
 // Get all active prompts
-export const getAllActive = publicProcedure.handler(async () => {
+export const getAllActive = rpcPublicProcedure.handler(async () => {
 	const prompts = await db.prompts
 		.where({ isActive: true })
 		.select("*")
@@ -17,7 +17,7 @@ export const getAllActive = publicProcedure.handler(async () => {
 });
 
 // Get a random active prompt
-export const getRandomActive = publicProcedure.handler(async () => {
+export const getRandomActive = rpcPublicProcedure.handler(async () => {
 	// Get count of active prompts
 	const count = await db.prompts.count();
 
@@ -53,7 +53,7 @@ export const getRandomActive = publicProcedure.handler(async () => {
 });
 
 // Get prompt by ID
-export const getById = publicProcedure
+export const getById = rpcPublicProcedure
 	.input(promptGetByIdZod)
 	.handler(async ({ input: { promptId } }) => {
 		const prompt = await db.prompts.find(promptId);
@@ -69,7 +69,7 @@ export const getById = publicProcedure
 	});
 
 // Get prompts by category (active/inactive)
-export const getByCategory = publicProcedure
+export const getByCategory = rpcPublicProcedure
 	.input(promptGetActiveZod)
 	.handler(async ({ input }) => {
 		const prompts = await db.prompts

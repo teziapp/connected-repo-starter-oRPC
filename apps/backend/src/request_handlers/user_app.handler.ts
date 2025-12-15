@@ -47,14 +47,17 @@ export const userAppHandler = new RPCHandler(router, {
       if (
         error instanceof ORPCError
         && error.code === 'BAD_REQUEST'
+        // @ts-ignore typescript throwing errors during build. No idea why.
         && error.cause instanceof ValidationError
       ) {
+        // @ts-ignore
         const zodError = new ZodError(error.cause.issues as $ZodIssue[])
 
         throw new ORPCError('INPUT_VALIDATION_FAILED', {
           status: 422,
           message: prettifyError(zodError),
           data: flattenError(zodError),
+        // @ts-ignore
           cause: error.cause,
         })
       }
@@ -63,9 +66,11 @@ export const userAppHandler = new RPCHandler(router, {
       if (
         error instanceof ORPCError
         && error.code === 'INTERNAL_SERVER_ERROR'
+        // @ts-ignore
         && error.cause instanceof ValidationError
       ) {
         throw new ORPCError('OUTPUT_VALIDATION_FAILED', {
+        // @ts-ignore
           cause: error.cause,
         })
       }

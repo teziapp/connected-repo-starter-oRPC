@@ -1,8 +1,14 @@
-import { ORPCContextWithHeaders } from '@backend/procedures/public.procedure';
+import { RpcContextWithHeaders } from '@backend/procedures/public.procedure';
 import { MiddlewareNextFn, ORPCError } from '@orpc/server';
 import { auth } from './auth.config';
 
-export const authMiddleware = async ({ context, next }: {context: ORPCContextWithHeaders, next: MiddlewareNextFn<unknown>}) => {
+export const rpcAuthMiddleware = async ({ 
+	context, 
+	next 
+}: {
+	context: RpcContextWithHeaders, 
+	next: MiddlewareNextFn<unknown>
+}) => {
 	const reqHeaders = context.reqHeaders;
 
 	const sessionData = await auth.api.getSession({

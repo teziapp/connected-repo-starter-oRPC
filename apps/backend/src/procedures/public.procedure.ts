@@ -4,19 +4,19 @@ import { os } from "@orpc/server";
 import { RequestHeadersPluginContext } from "@orpc/server/plugins";
 import z from "zod";
 
-export interface ORPCContext extends RequestHeadersPluginContext {
+export interface RpcContext extends RequestHeadersPluginContext {
 	session?: ActiveSessionSelectAll;
 	user?: UserSelectAll;
 }
 
-export interface ORPCContextWithHeaders extends ORPCContext {
+export interface RpcContextWithHeaders extends RpcContext {
 	reqHeaders: Headers;
 }
 
-export const baseOrpc = os.$context<ORPCContext>()
+export const rpcBaseOrpc = os.$context<RpcContext>()
 
 // Public procedure with context
-export const publicProcedure = baseOrpc
+export const rpcPublicProcedure = rpcBaseOrpc
 	.use(({ context, next }) => {
 		const reqHeaders = context.reqHeaders ?? new Headers();
 		// You can add any public middleware logic here if needed

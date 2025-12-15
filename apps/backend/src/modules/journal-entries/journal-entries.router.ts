@@ -1,14 +1,14 @@
 import { db } from "@backend/db/db";
-import { protectedProcedure } from "@backend/procedures/protected.procedure";
+import { rpcProtectedProcedure } from "@backend/procedures/protected.procedure";
 import {
-	journalEntryCreateInputZod,
-	journalEntryDeleteZod,
-	journalEntryGetByIdZod,
-	journalEntryGetByUserZod,
+    journalEntryCreateInputZod,
+    journalEntryDeleteZod,
+    journalEntryGetByIdZod,
+    journalEntryGetByUserZod,
 } from "@connected-repo/zod-schemas/journal_entry.zod";
 
 // Get all journal entries for the authenticated user
-export const getAll = protectedProcedure.handler(async ({ context: { user } }) => {
+export const getAll = rpcProtectedProcedure.handler(async ({ context: { user } }) => {
 
 	const journalEntries = await db.journalEntries
 		.select("*", {
@@ -20,7 +20,7 @@ export const getAll = protectedProcedure.handler(async ({ context: { user } }) =
 });
 
 // Get journal entry by ID
-export const getById = protectedProcedure
+export const getById = rpcProtectedProcedure
 	.input(journalEntryGetByIdZod)
 	.handler(async ({ input: { journalEntryId }, context: { user } }) => {
 
@@ -32,7 +32,7 @@ export const getById = protectedProcedure
 	});
 
 // Create journal entry
-export const create = protectedProcedure
+export const create = rpcProtectedProcedure
 	.input(journalEntryCreateInputZod)
 	.handler(async ({ input, context: { user } }) => {
 
@@ -45,7 +45,7 @@ export const create = protectedProcedure
 	});
 
 // Get journal entries by user
-export const getByUser = protectedProcedure
+export const getByUser = rpcProtectedProcedure
 	.input(journalEntryGetByUserZod)
 	.handler(async ({ input }) => {
 		const journalEntries = await db.journalEntries
@@ -59,7 +59,7 @@ export const getByUser = protectedProcedure
 	});
 
 // Delete journal entry
-export const deleteEntry = protectedProcedure
+export const deleteEntry = rpcProtectedProcedure
 	.input(journalEntryDeleteZod)
 	.handler(async ({ input: { journalEntryId }, context: { user } }) => {
 		await db.journalEntries.find(journalEntryId).where({ authorUserId: user.id }).delete();

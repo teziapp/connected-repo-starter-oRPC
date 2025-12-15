@@ -11,7 +11,7 @@ export class TeamTable extends BaseTable {
     apiSecretHash: t.string().select(false),
     name: t.string(),
     rateLimitPerMinute: t.integer(),
-    subscriptionAlertWebhookUrl: t.string(),
+    subscriptionAlertWebhookUrl: t.string().nullable(),
     subscriptionAlertWebhookBearerToken: t.string().nullable().select(false),
     ...t.timestamps(),
   }));

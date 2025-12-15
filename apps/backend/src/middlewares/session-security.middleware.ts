@@ -1,4 +1,4 @@
-import { AuthenticatedContext } from '@backend/procedures/protected.procedure';
+import { RpcAuthenticatedContext } from '@backend/procedures/protected.procedure';
 import { generateDeviceFingerprint, getClientIpAddress } from '@backend/utils/client-info.utils';
 import { MiddlewareNextFn, ORPCError } from '@orpc/server';
 
@@ -12,8 +12,8 @@ export interface SessionSecurityResult {
 /**
  * Session security middleware - validates device fingerprint and IP address
  */
-export const sessionSecurityMiddleware = (securityLevel: 'low' | 'moderate' | 'strict' = 'moderate') =>
-	async ({ context, next }: { context: AuthenticatedContext; next: MiddlewareNextFn<unknown> }) => {
+export const rpcSessionSecurityMiddleware = (securityLevel: 'low' | 'moderate' | 'strict' = 'moderate') =>
+	async ({ context, next }: { context: RpcAuthenticatedContext; next: MiddlewareNextFn<unknown> }) => {
 		const session = context.session;
 
 		const result: SessionSecurityResult = {

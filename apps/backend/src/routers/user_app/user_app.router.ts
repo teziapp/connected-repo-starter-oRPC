@@ -1,7 +1,7 @@
 import { journalEntriesRouter } from '@backend/modules/journal-entries/journal-entries.router'
 import { promptsRouter } from '@backend/modules/prompts/prompts.router'
-import { protectedProcedure } from '@backend/procedures/protected.procedure'
-import { publicProcedure } from '@backend/procedures/public.procedure'
+import { rpcProtectedProcedure } from '@backend/procedures/protected.procedure'
+import { rpcPublicProcedure } from '@backend/procedures/public.procedure'
 import { usersRouter } from '@backend/routers/user_app/users.user_app.router'
 import { InferRouterInputs, InferRouterOutputs, RouterClient } from '@orpc/server'
 import * as z from 'zod'
@@ -10,7 +10,7 @@ import * as z from 'zod'
 // Modules will be added in later phases
 
 // Health check endpoint
-export const healthCheck = publicProcedure
+export const healthCheck = rpcPublicProcedure
 	.route({ method: 'GET' })
 	.handler(async () => {
 		return {
@@ -22,7 +22,7 @@ export const healthCheck = publicProcedure
 	})
 
 // Test public endpoint (with rate limiting)
-export const testPublic = publicProcedure
+export const testPublic = rpcPublicProcedure
 	.input(z.object({
 		message: z.string().optional(),
 	}))
@@ -35,7 +35,7 @@ export const testPublic = publicProcedure
 	})
 
 // Test protected endpoint (requires auth - will fail in Phase 1)
-export const testProtected = protectedProcedure
+export const testProtected = rpcProtectedProcedure
 	.handler(async ({ context }) => {
 		return {
 			message: 'You are authenticated!',
@@ -51,7 +51,7 @@ const PlanetSchema = z.object({
 	description: z.string().optional(),
 })
 
-export const listPlanet = publicProcedure
+export const listPlanet = rpcPublicProcedure
 	.input(
 		z.object({
 			limit: z.number().int().min(1).max(100).optional(),
