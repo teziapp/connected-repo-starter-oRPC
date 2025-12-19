@@ -1,18 +1,19 @@
 import { sql } from "@backend/db/base_table";
+import type { Db } from "@backend/db/db";
 import { applyJoins } from "@backend/modules/auth/orchid-adapter/join_query_builder.orchid_adapter";
 import { validateModel, validateSelect } from "@backend/modules/auth/orchid-adapter/model_table_map.orchid_adapter";
 import { applyBetterAuthWhere } from "@backend/modules/auth/orchid-adapter/where_query_builder.orchid_adapter";
-import type {
-  AdapterFactoryCustomizeAdapterCreator
-} from "@better-auth/core/db/adapter";
+import type { AdapterFactoryCustomizeAdapterCreator } from "@better-auth/core/db/adapter";
 
-export const createCustomAdapterOrchid = (db: any): AdapterFactoryCustomizeAdapterCreator =>
-  ({ getFieldName, options }) => ({
+export const createCustomAdapterOrchid = (db: Db): AdapterFactoryCustomizeAdapterCreator =>
+  () => ({
+    // @ts-expect-error
     create: async ({ model, data, select }) => {
       const modelName = validateModel(model);
       const validatedSelect = validateSelect(modelName, select);
       const result = await db[modelName]
         .create(data)
+        // @ts-expect-error
         .select(validatedSelect.join(", "));
 
       return result;
@@ -35,7 +36,7 @@ export const createCustomAdapterOrchid = (db: any): AdapterFactoryCustomizeAdapt
     findOne: async ({ model, where, select, join }) => {
       const modelName = validateModel(model);
       const validatedSelect = validateSelect(modelName, select);
-      let query = applyBetterAuthWhere(db[modelName], where);
+      const query = applyBetterAuthWhere(db[modelName], where);
       
       // Apply joins and get the select fields
       const { query: joinedQuery, selectFields } = applyJoins(query, join, db);
@@ -82,7 +83,7 @@ export const createCustomAdapterOrchid = (db: any): AdapterFactoryCustomizeAdapt
     },
     count: ({ model, where }) => {
       const modelName = validateModel(model);
-      let query = applyBetterAuthWhere(db[modelName], where);
+      const query = applyBetterAuthWhere(db[modelName], where);
       return query.count();
     },
     deleteMany: async ({ model, where }) => {

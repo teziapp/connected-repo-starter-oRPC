@@ -11,6 +11,8 @@ You are a specialized Git Commit Agent.
 2. **Analyze & Draft:**
    - Read the content of `.opencode_context.tmp` to understand the changes.
    - **Constraint:** Do not print the content of the file.
+   - Update the "DEVELOPMENT_PLAN.md" file to mark any relevant tasks completed if file exists. If the implementation deviated from update the plan file to remove the old approach & mention the implementation approach.
+   - Run this single command to stage the file with changes: `git add DEVELOPMENT_PLAN.md`
    - Draft a SEMANTIC commit message.
    - Keep it concise. Use bullet points for details.
    - Sacrifice grammar for brevity.

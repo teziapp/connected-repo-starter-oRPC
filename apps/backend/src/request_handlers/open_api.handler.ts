@@ -1,15 +1,13 @@
-import { env, isProd } from "@backend/configs/env.config";
+import { isProd } from "@backend/configs/env.config";
 import { openApiRouter } from "@backend/routers/open_api/open_api.router";
+import { orpcErrorParser } from "@backend/utils/errorParser";
 import { logger } from "@backend/utils/logger.utils";
 import { LoggingHandlerPlugin } from "@orpc/experimental-pino";
 import { OpenAPIHandler } from "@orpc/openapi/node";
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins";
-import { onError, ORPCError } from "@orpc/server";
+import { ORPCError, onError } from "@orpc/server";
 import { CORSPlugin, RequestHeadersPlugin } from "@orpc/server/plugins";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
-import { flattenError, prettifyError } from "zod";
-
-export const allowedOrigins = [...(env.ALLOWED_ORIGINS?.split(",") || [])];
 
 export const openApiHandler = new OpenAPIHandler(openApiRouter, {
 	plugins: [
@@ -70,37 +68,13 @@ export const openApiHandler = new OpenAPIHandler(openApiRouter, {
   clientInterceptors: [
     // Client-side error transformation
     onError((error) => {
-      // Handle Zod validation errors for input
-      if (
-        error instanceof ORPCError
-        && error.code === 'BAD_REQUEST'
-        // @ts-ignore typescript throwing errors during build. No idea why.
-        && error.cause instanceof ValidationError
-      ) {
-        // @ts-ignore
-        const zodError = new ZodError(error.cause.issues as $ZodIssue[])
-
-        throw new ORPCError('INPUT_VALIDATION_FAILED', {
-          status: 422,
-          message: prettifyError(zodError),
-          data: flattenError(zodError),
-        // @ts-ignore
-          cause: error.cause,
-        })
-      }
-
-      // Handle Zod validation errors for output
-      if (
-        error instanceof ORPCError
-        && error.code === 'INTERNAL_SERVER_ERROR'
-        // @ts-ignore
-        && error.cause instanceof ValidationError
-      ) {
-        throw new ORPCError('OUTPUT_VALIDATION_FAILED', {
-        // @ts-ignore
-          cause: error.cause,
-        })
-      }
+      const parsed = orpcErrorParser(error as Error);
+      throw new ORPCError(parsed.code, {
+        status: parsed.httpStatus,
+        message: parsed.userFriendlyMessage,
+        data: parsed.details,
+        cause: error,
+      });
     }),
   ],
 });

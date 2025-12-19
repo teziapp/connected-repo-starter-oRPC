@@ -1,0 +1,40 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"workspaces": {
+		"apps/backend": {
+			"project": ["src/**/*.ts"],
+			"entry": ["src/server.ts"],
+			"ignoreDependencies": [
+				
+			],
+			"ignoreFiles": [
+				"src/db/migrations/**",
+				"src/middlewares/session-security.middleware.ts",
+				"src/procedures/sensitive.procedure.ts"
+			]
+		},
+		"apps/frontend": {
+			"project": ["src/**/*.{ts,tsx}"],
+			"entry": ["src/main.tsx", "index.html"]
+		},
+		"packages/zod-schemas": {
+			"project": ["src/**/*.ts"],
+			"entry": ["src/**/*.ts"]
+		},
+		"packages/ui-mui": {
+			"project": ["src/**/*.{ts,tsx}"],
+			"entry": ["src/**/*.ts"]
+		},
+		"packages/typescript-config": {
+			"project": ["*.json"],
+			"entry": ["*.json"]
+		}
+	},
+	"ignoreDependencies": [
+		"@orpc/server"
+	],
+	"rules": {
+		"files": "error",
+		"exports": "error"
+	}
+}

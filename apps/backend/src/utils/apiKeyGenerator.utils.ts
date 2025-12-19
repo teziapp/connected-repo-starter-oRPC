@@ -6,7 +6,9 @@ const scrypt = promisify(crypto.scrypt);
 /**
  * Generate a cryptographically secure API key with prefix
  * @returns Plain API key string (format: sk_live_<32 random chars>)
+ * @public
  */
+
 export function generateApiKey(): string {
 	const randomBytes = crypto.randomBytes(24); // 24 bytes = 32 base64 chars
 	const randomString = randomBytes.toString("base64url").slice(0, 32);
@@ -17,6 +19,7 @@ export function generateApiKey(): string {
  * Hash an API key using scrypt from node:crypto
  * @param plainKey - The plain text API key to hash
  * @returns Hash in format: salt:hash (both hex encoded)
+ * @public
  */
 export async function hashApiKey(plainKey: string): Promise<string> {
 	const salt = crypto.randomBytes(16).toString("hex");

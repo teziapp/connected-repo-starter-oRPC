@@ -4,14 +4,14 @@ import { ErrorFallback } from "@frontend/components/error_fallback";
 import { AppLayout } from "@frontend/components/layout/AppLayout";
 import { authLoader } from "@frontend/utils/auth.loader";
 import { lazy } from "react";
-import { createBrowserRouter, redirect, type RouteObject } from "react-router";
+import { createBrowserRouter, type RouteObject, redirect } from "react-router";
 
 type NavbarFields = {
 	nb_icon?: string;
 };
 
 type BaseRouterWithNavbar = RouteObject & NavbarFields;
-export type ReactRouterWithNavbar = BaseRouterWithNavbar & {
+type ReactRouterWithNavbar = BaseRouterWithNavbar & {
 	children?: ReactRouterWithNavbar[];
 };
 
@@ -30,7 +30,7 @@ const HydrateFallback = () => (
 	</Box>
 );
 
-export const routerObjectWithNavbar: ReactRouterWithNavbar[] = [
+const routerObjectWithNavbar: ReactRouterWithNavbar[] = [
 	{
 		path: "/",
 		errorElement: <ErrorFallback />,

@@ -3,7 +3,7 @@ import { HomeIcon } from "@connected-repo/ui-mui/icons/HomeIcon";
 import { ListIcon } from "@connected-repo/ui-mui/icons/ListIcon";
 import { PostAddIcon } from "@connected-repo/ui-mui/icons/PostAddIcon";
 
-export interface NavItem {
+interface NavItem {
 	/** Display label for the nav item */
 	label: string;
 	/** Route path */
@@ -38,10 +38,3 @@ export const navItems: NavItem[] = [
 		mobileIcon: <PostAddIcon />,
 	},
 ];
-
-/**
- * Get icon for navbar based on platform
- */
-export const getNavIcon = (item: NavItem, isMobile: boolean) => {
-	return isMobile && item.mobileIcon ? item.mobileIcon : item.desktopIcon;
-};

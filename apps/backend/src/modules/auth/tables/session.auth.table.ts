@@ -1,6 +1,6 @@
 import { BaseTable, sql } from "@backend/db/base_table";
 import { UserTable } from "@backend/modules/users/tables/users.table";
-import { Selectable } from "orchid-orm";
+import type { Selectable } from "orchid-orm";
 import { ulid } from "ulid";
 
 export class SessionTable extends BaseTable {
@@ -47,11 +47,11 @@ export class SessionTable extends BaseTable {
 	})
 };
 
-export type NonNullableFields<T> = {
+type NonNullableFields<T> = {
   [P in keyof T]: NonNullable<T[P]>;
 };
 
-export type NonNullableField<T, K extends keyof T> = T &
+type NonNullableField<T, K extends keyof T> = T &
 NonNullableFields<Pick<T, K>>;
 
 export type ActiveSessionSelectAll = NonNullableField<Selectable<SessionTable>, "userId">;

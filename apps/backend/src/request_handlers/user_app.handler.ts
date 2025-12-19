@@ -1,12 +1,11 @@
 import { env, isProd, isStaging } from '@backend/configs/env.config';
 import { router } from '@backend/routers/user_app/user_app.router';
+import { orpcErrorParser } from '@backend/utils/errorParser';
 import { logger } from '@backend/utils/logger.utils';
 import { LoggingHandlerPlugin } from '@orpc/experimental-pino';
-import { onError, ORPCError, ValidationError } from '@orpc/server';
+import { ORPCError, onError } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/node';
 import { CORSPlugin, RequestHeadersPlugin, SimpleCsrfProtectionHandlerPlugin, StrictGetMethodPlugin } from '@orpc/server/plugins';
-import { ZodError } from 'zod';
-import { $ZodIssue, flattenError, prettifyError } from 'zod/v4/core';
 
 export const allowedOrigins = [...(env.ALLOWED_ORIGINS?.split(",") || [])];
 
@@ -43,37 +42,13 @@ export const userAppHandler = new RPCHandler(router, {
   clientInterceptors: [
     // Client-side error transformation
     onError((error) => {
-      // Handle Zod validation errors for input
-      if (
-        error instanceof ORPCError
-        && error.code === 'BAD_REQUEST'
-        // @ts-ignore typescript throwing errors during build. No idea why.
-        && error.cause instanceof ValidationError
-      ) {
-        // @ts-ignore
-        const zodError = new ZodError(error.cause.issues as $ZodIssue[])
-
-        throw new ORPCError('INPUT_VALIDATION_FAILED', {
-          status: 422,
-          message: prettifyError(zodError),
-          data: flattenError(zodError),
-        // @ts-ignore
-          cause: error.cause,
-        })
-      }
-
-      // Handle Zod validation errors for output
-      if (
-        error instanceof ORPCError
-        && error.code === 'INTERNAL_SERVER_ERROR'
-        // @ts-ignore
-        && error.cause instanceof ValidationError
-      ) {
-        throw new ORPCError('OUTPUT_VALIDATION_FAILED', {
-        // @ts-ignore
-          cause: error.cause,
-        })
-      }
+      const parsed = orpcErrorParser(error as Error);
+      throw new ORPCError(parsed.code, {
+        status: parsed.httpStatus,
+        message: parsed.userFriendlyMessage,
+        data: parsed.details,
+        cause: error,
+      });
     }),
   ],
 })

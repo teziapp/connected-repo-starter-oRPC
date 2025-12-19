@@ -3,7 +3,7 @@ import JournalEntriesPage from "@frontend/modules/journal-entries/pages/JournalE
 import JournalEntryDetailPage from "@frontend/modules/journal-entries/pages/JournalEntryDetail.page";
 import { Route, Routes } from "react-router";
 
-export const JournalEntriesRouter = () => {
+const JournalEntriesRouter = () => {
 	return (
 		<Routes>
       <Route path="/" element={<JournalEntriesPage />} />

@@ -3,7 +3,7 @@ import * as z from "zod";
 import { teamRouter } from "./team.router";
 
 // Health check endpoint for OpenAPI (public - no auth required)
-export const healthCheck = openApiPublicProcedure
+const healthCheck = openApiPublicProcedure
 	.route({ method: "GET", path: "/health" })
 	.output(
 		z.object({

@@ -32,6 +32,7 @@ export function getClientIpAddress(headers: Headers) {
 /**
  * Generate a device fingerprint based on request headers, optimized for robustness.
  * Creates a stable hash of core browser/device characteristics.
+ * @public
  */
 export function generateDeviceFingerprint(headers: Headers): string {
     // Normalize User-Agent: convert to lowercase for case-insensitivity
@@ -41,7 +42,7 @@ export function generateDeviceFingerprint(headers: Headers): string {
     // Normalize Accept-Language: Only use the primary language code (e.g., 'en' from 'en-US,en;q=0.9')
 		const acceptLanguage = headers.get("accept-language");
     const primaryLanguage = acceptLanguage
-			? acceptLanguage!.split(',')[0] // Get the first (primary) part: 'en-US'
+			? acceptLanguage.split(',')[0] // Get the first (primary) part: 'en-US'
         ?.substring(0, 2) // Get the two-letter code: 'en'
         .toLowerCase() || ""
 			: "";

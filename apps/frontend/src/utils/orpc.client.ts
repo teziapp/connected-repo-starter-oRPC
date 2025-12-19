@@ -3,14 +3,14 @@ import { createORPCClient, onError } from '@orpc/client';
 import { RPCLink } from '@orpc/client/fetch';
 import { SimpleCsrfProtectionLinkPlugin } from '@orpc/client/plugins';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
-import type { UserAppRouter } from "../../../backend/src/routers/user_app/user_app.router";
+import type { UserAppRouter, UserAppRouterInputs, UserAppRouterOutputs } from "../../../backend/src/routers/user_app/user_app.router";
 
 interface ClientContext {
   something?: string
 }
 
 const link = new RPCLink<ClientContext>({
-  url: env.VITE_API_URL + "/user-app",
+  url: `${env.VITE_API_URL}/user-app`,
   headers: ({ context }) => (
     { 
         Authorization: 'Bearer token',
@@ -36,4 +36,12 @@ const link = new RPCLink<ClientContext>({
 export const orpcFetch: UserAppRouter = createORPCClient(link);
 
 export const orpc = createTanstackQueryUtils(orpcFetch);
+/**
+ * @public
+ */
+export type UserAppBackendInputs = UserAppRouterInputs;
+/**
+ * @public
+ */
+export type UserAppBackendOutputs = UserAppRouterOutputs;
 

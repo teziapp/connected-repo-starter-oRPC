@@ -1,14 +1,14 @@
 import { db } from "@backend/db/db";
 import { rpcProtectedProcedure } from "@backend/procedures/protected.procedure";
 import {
-    journalEntryCreateInputZod,
-    journalEntryDeleteZod,
-    journalEntryGetByIdZod,
-    journalEntryGetByUserZod,
+	journalEntryCreateInputZod,
+	journalEntryDeleteZod,
+	journalEntryGetByIdZod,
+	journalEntryGetByUserZod,
 } from "@connected-repo/zod-schemas/journal_entry.zod";
 
 // Get all journal entries for the authenticated user
-export const getAll = rpcProtectedProcedure.handler(async ({ context: { user } }) => {
+const getAll = rpcProtectedProcedure.handler(async ({ context: { user } }) => {
 
 	const journalEntries = await db.journalEntries
 		.select("*", {
@@ -20,7 +20,7 @@ export const getAll = rpcProtectedProcedure.handler(async ({ context: { user } }
 });
 
 // Get journal entry by ID
-export const getById = rpcProtectedProcedure
+const getById = rpcProtectedProcedure
 	.input(journalEntryGetByIdZod)
 	.handler(async ({ input: { journalEntryId }, context: { user } }) => {
 
@@ -32,7 +32,7 @@ export const getById = rpcProtectedProcedure
 	});
 
 // Create journal entry
-export const create = rpcProtectedProcedure
+const create = rpcProtectedProcedure
 	.input(journalEntryCreateInputZod)
 	.handler(async ({ input, context: { user } }) => {
 
@@ -45,7 +45,7 @@ export const create = rpcProtectedProcedure
 	});
 
 // Get journal entries by user
-export const getByUser = rpcProtectedProcedure
+const getByUser = rpcProtectedProcedure
 	.input(journalEntryGetByUserZod)
 	.handler(async ({ input }) => {
 		const journalEntries = await db.journalEntries
@@ -59,7 +59,7 @@ export const getByUser = rpcProtectedProcedure
 	});
 
 // Delete journal entry
-export const deleteEntry = rpcProtectedProcedure
+const deleteEntry = rpcProtectedProcedure
 	.input(journalEntryDeleteZod)
 	.handler(async ({ input: { journalEntryId }, context: { user } }) => {
 		await db.journalEntries.find(journalEntryId).where({ authorUserId: user.id }).delete();

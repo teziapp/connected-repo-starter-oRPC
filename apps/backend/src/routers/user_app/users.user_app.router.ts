@@ -3,13 +3,13 @@ import { rpcProtectedProcedure } from "@backend/procedures/protected.procedure";
 import { userGetByIdInputZod } from "@connected-repo/zod-schemas/user.zod";
 
 // Get all users - requires authentication
-export const getAll = rpcProtectedProcedure.handler(async () => {
+const getAll = rpcProtectedProcedure.handler(async () => {
 	const users = await db.users.selectAll();
 	return users;
 });
 
 // Get user by ID - requires authentication
-export const getById = rpcProtectedProcedure
+const getById = rpcProtectedProcedure
 	.input(userGetByIdInputZod)
 	.handler(async ({ input: { id: userId } }) => {
 		return await db.users

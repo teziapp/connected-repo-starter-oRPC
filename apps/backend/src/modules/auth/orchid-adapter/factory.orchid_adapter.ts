@@ -1,8 +1,9 @@
+import type { Db } from "@backend/db/db";
 import type { BetterAuthOptions } from "@better-auth/core";
 import type {
-	DBAdapter,
-	DBAdapterDebugLogOption,
-	DBTransactionAdapter
+  DBAdapter,
+  DBAdapterDebugLogOption,
+  DBTransactionAdapter
 } from "@better-auth/core/db/adapter";
 import { createAdapterFactory } from "@better-auth/core/db/adapter";
 import { createCustomAdapterOrchid } from "./custom_adapter.orchid_adapter";
@@ -18,7 +19,7 @@ interface OrchidAdapterConfig {
   usePlural?: boolean;
 }
 
-export const orchidAdapter = (db: { [key: string]: any }, config: OrchidAdapterConfig = {
+export const orchidAdapter = (db: Db, config: OrchidAdapterConfig = {
   debugLogs: false,
   usePlural: false,
 }) => {
@@ -39,10 +40,14 @@ export const orchidAdapter = (db: { [key: string]: any }, config: OrchidAdapterC
   };
 
 	adapterOptions.config.transaction = (cb) => db.$transaction(() => {
+    if(!lazyOptions) {
+      throw new Error("No Options found in Orchid Adapter.");
+    };
+    
 		const adapter = createAdapterFactory({
 			config: adapterOptions.config,
 			adapter: createCustomAdapterOrchid(db),
-		})(lazyOptions!);
+		})(lazyOptions);
 		return cb(adapter);
 	});
 

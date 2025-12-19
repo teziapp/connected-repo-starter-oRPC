@@ -2,7 +2,7 @@ import { loadEnv, type Plugin } from "vite";
 import { prettifyError, ZodError } from "zod";
 import { envSchemaZod } from "./env_validator.zod.utils";
 
-export const validateEnvironment = (input: unknown) => {
+const validateEnvironment = (input: unknown) => {
 	try {
 		return envSchemaZod.parse(input);
 	} catch (error) {

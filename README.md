@@ -1,6 +1,6 @@
 # Full-Stack TypeScript Monorepo
 
-A production-ready Turborepo monorepo for building full-stack TypeScript applications with end-to-end type safety.
+A production-ready Turborepo monorepo for building full-stack TypeScript applications with end-to-end type safety, with a implemented project for detailed reference.
 
 ## Tech Stack
 
@@ -72,6 +72,20 @@ A production-ready Turborepo monorepo for building full-stack TypeScript applica
 ├── turbo.json
 └── package.json
 ```
+
+## Project Overview
+
+This repository contains a **Scheduled Prompt & Journal** app that delivers timed notifications with thought-provoking prompts and enables simple text-based journaling. Key features include:
+- Timed notifications with thought-provoking prompts
+- Simple text-based journaling
+- Search functionality for past entries
+- Gamification (streaks & badges)
+- Free tier (with ads) and paid tier (cloud sync, ad-free)
+- Mobile & web support (PWA + Capacitor)
+
+For detailed development roadmap and priorities, see [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md).
+
+For contribution guidelines, code style, and development setup, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Getting Started
 
@@ -308,6 +322,8 @@ Learn more:
 
 ## Documentation
 
+- [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) - Detailed development roadmap and priorities
+- [CONTRIBUTING.md](./CONTRIBUTING.md) - Contribution guidelines, code style, and development setup
 - [AGENTS.md](./AGENTS.md) - Agent guidelines for coding agents
 - [apps/frontend/AGENTS.md](./apps/frontend/AGENTS.md) - Frontend React patterns and best practices
 - [packages/ui-mui/AGENTS.md](./packages/ui-mui/AGENTS.md) - UI component library documentation

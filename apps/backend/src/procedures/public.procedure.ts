@@ -1,9 +1,12 @@
-import { ActiveSessionSelectAll } from "@backend/modules/auth/tables/session.auth.table";
-import { UserSelectAll } from "@connected-repo/zod-schemas/user.zod";
+import type { ActiveSessionSelectAll } from "@backend/modules/auth/tables/session.auth.table";
+import type { UserSelectAll } from "@connected-repo/zod-schemas/user.zod";
 import { os } from "@orpc/server";
-import { RequestHeadersPluginContext } from "@orpc/server/plugins";
+import type { RequestHeadersPluginContext } from "@orpc/server/plugins";
 import z from "zod";
 
+/**
+ * @public
+ */
 export interface RpcContext extends RequestHeadersPluginContext {
 	session?: ActiveSessionSelectAll;
 	user?: UserSelectAll;
@@ -13,7 +16,7 @@ export interface RpcContextWithHeaders extends RpcContext {
 	reqHeaders: Headers;
 }
 
-export const rpcBaseOrpc = os.$context<RpcContext>()
+const rpcBaseOrpc = os.$context<RpcContext>()
 
 // Public procedure with context
 export const rpcPublicProcedure = rpcBaseOrpc
