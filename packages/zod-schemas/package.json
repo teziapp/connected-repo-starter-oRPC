@@ -29,5 +29,8 @@
 			"import": "./dist/*.js",
 			"default": "./dist/*.js"
 		}
+	},
+	"dependencies": {
+		"@faker-js/faker": "^10.1.0"
 	}
 }

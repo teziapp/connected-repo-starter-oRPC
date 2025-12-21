@@ -1,5 +1,6 @@
-import { env, isProd, isStaging } from '@backend/configs/env.config';
-import { router } from '@backend/routers/user_app/user_app.router';
+import { allowedOrigins } from '@backend/configs/allowed_origins.config';
+import { isProd, isStaging } from '@backend/configs/env.config';
+import { userAppRouter } from '@backend/routers/user_app/user_app.router';
 import { orpcErrorParser } from '@backend/utils/errorParser';
 import { logger } from '@backend/utils/logger.utils';
 import { LoggingHandlerPlugin } from '@orpc/experimental-pino';
@@ -7,9 +8,7 @@ import { ORPCError, onError } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/node';
 import { CORSPlugin, RequestHeadersPlugin, SimpleCsrfProtectionHandlerPlugin, StrictGetMethodPlugin } from '@orpc/server/plugins';
 
-export const allowedOrigins = [...(env.ALLOWED_ORIGINS?.split(",") || [])];
-
-export const userAppHandler = new RPCHandler(router, {
+export const userAppHandler = new RPCHandler(userAppRouter, {
   plugins: [
     // Request headers plugin for accessing headers in context
     new RequestHeadersPlugin(),

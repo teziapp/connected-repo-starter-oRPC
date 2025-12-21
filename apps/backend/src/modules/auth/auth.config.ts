@@ -1,6 +1,6 @@
-import { env, isDev, isProd } from "@backend/configs/env.config";
+import { allowedOrigins } from "@backend/configs/allowed_origins.config";
+import { env, isDev, isProd, isTest } from "@backend/configs/env.config";
 import { db } from "@backend/db/db";
-import { allowedOrigins } from "@backend/request_handlers/user_app.handler";
 import { betterAuth } from "better-auth";
 import { orchidAdapter } from "./orchid-adapter/factory.orchid_adapter";
 
@@ -13,7 +13,7 @@ export const auth = betterAuth({
 			state: {
 				attributes: {
 					sameSite: isProd ? "none" : "lax",
-					secure: isDev ? false : true,
+					secure: !isDev,
 				}
 			}
 		},
@@ -38,7 +38,7 @@ export const auth = betterAuth({
 		path: "/",
 	},
 	emailAndPassword: {
-		enabled: false,
+		enabled: isTest,
 	},
 	secret: env.BETTER_AUTH_SECRET,
 	session: {

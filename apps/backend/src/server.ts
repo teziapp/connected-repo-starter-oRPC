@@ -1,10 +1,11 @@
+import { createServer } from 'node:http';
+import { allowedOrigins } from '@backend/configs/allowed_origins.config';
 import { env, isDev, isProd, isStaging, isTest } from '@backend/configs/env.config';
 import { betterAuthHandler } from '@backend/request_handlers/better_auth.handler';
 import { openApiHandler } from '@backend/request_handlers/open_api.handler';
-import { allowedOrigins, userAppHandler } from '@backend/request_handlers/user_app.handler';
+import { userAppHandler } from '@backend/request_handlers/user_app.handler';
 import { handleServerClose } from '@backend/utils/graceful_shutdown.utils';
 import { logger } from '@backend/utils/logger.utils';
-import { createServer } from 'node:http';
 
 logger.info({ isDev, isProd, isStaging, isTest }, "Environment:");
 logger.info(allowedOrigins, "Allowed Origins:");

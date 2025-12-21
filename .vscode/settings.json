@@ -2,7 +2,8 @@
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
         "source.fixAll.biome": "explicit",
-        "source.organizeImports.biome": "explicit"
+        "source.organizeImports.biome": "explicit",
+        "source.sort.json": "explicit"
     },
     "editor.defaultFormatter": "biomejs.biome"
 }

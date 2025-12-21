@@ -19,7 +19,7 @@ const healthCheck = rpcPublicProcedure
 		}
 	})
 	
-export const router = {
+export const userAppRouter = {
 	// Phase 1 test endpoints
 	health: healthCheck,
 	// Phase 3: Core modules
@@ -29,6 +29,6 @@ export const router = {
 	// Phase 5: teams, subscriptions will be added here
 };
 
-export type UserAppRouter = RouterClient<typeof router>;
-export type UserAppRouterInputs = InferRouterInputs<typeof router>
-export type UserAppRouterOutputs = InferRouterOutputs<typeof router>;
+export type UserAppRouter = RouterClient<typeof userAppRouter>;
+export type UserAppRouterInputs = InferRouterInputs<typeof userAppRouter>
+export type UserAppRouterOutputs = InferRouterOutputs<typeof userAppRouter>;

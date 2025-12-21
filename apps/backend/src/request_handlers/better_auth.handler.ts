@@ -1,7 +1,7 @@
+import type { IncomingMessage, ServerResponse } from "node:http";
+import { allowedOrigins } from "@backend/configs/allowed_origins.config";
 import { auth } from '@backend/modules/auth/auth.config';
-import { allowedOrigins } from "@backend/request_handlers/user_app.handler";
 import { toNodeHandler } from 'better-auth/node';
-import { IncomingMessage, ServerResponse } from "node:http";
 
 export const betterAuthHandler = {
   handle: (

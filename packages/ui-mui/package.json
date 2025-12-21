@@ -1,22 +1,64 @@
 {
-	"name": "@connected-repo/ui-mui",
-	"version": "1.0.0",
-	"description": "Common Material-UI components for the monorepo",
-	"type": "module",
-	"sideEffects": false,
-	"repository": "git@github.com:teziapp/connected-repo-starter-oRPC.git",
 	"author": "Balkrishna Agarwal",
-	"license": "AGPL-3.0-only",
-	"private": true,
-	"scripts": {
-		"check-types": "tsc --noEmit",
-		"build": "tsc && tsc-alias",
-		"dev": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
-		"clean": "rm -rf node_modules && rm -rf dist",
-		"lint": "biome check .",
-		"format": "biome format . --write",
-		"typecheck": "tsc --noEmit"
+	"description": "Common Material-UI components for the monorepo",
+	"devDependencies": {
+		"@connected-repo/typescript-config": "*",
+		"@types/react": "^19.2.2"
 	},
+	"exports": {
+		"./components/*": {
+			"default": "./dist/components/*.js",
+			"import": "./dist/components/*.js",
+			"types": "./src/components/*.tsx"
+		},
+		"./data-display/*": {
+			"default": "./dist/data-display/*.js",
+			"import": "./dist/data-display/*.js",
+			"types": "./src/data-display/*.ts"
+		},
+		"./feedback/*": {
+			"default": "./dist/feedback/*.js",
+			"import": "./dist/feedback/*.js",
+			"types": "./src/feedback/*.tsx"
+		},
+		"./form/*": {
+			"default": "./dist/form/*.js",
+			"import": "./dist/form/*.js",
+			"types": "./src/form/*.tsx"
+		},
+		"./icons/*": {
+			"default": "./dist/icons/*.js",
+			"import": "./dist/icons/*.js",
+			"types": "./src/icons/*.ts"
+		},
+		"./layout/*": {
+			"default": "./dist/layout/*.js",
+			"import": "./dist/layout/*.js",
+			"types": "./src/layout/*.tsx"
+		},
+		"./mrt/*": {
+			"default": "./dist/mrt/*.js",
+			"import": "./dist/mrt/*.js",
+			"types": "./src/mrt/*.tsx"
+		},
+		"./navigation/*": {
+			"default": "./dist/navigation/*.js",
+			"import": "./dist/navigation/*.js",
+			"types": "./src/navigation/*.ts"
+		},
+		"./rhf-form/*": {
+			"default": "./dist/rhf-form/*.js",
+			"import": "./dist/rhf-form/*.js",
+			"types": "./src/rhf-form/*.tsx"
+		},
+		"./theme/*": {
+			"default": "./dist/theme/*.js",
+			"import": "./dist/theme/*.js",
+			"types": "./src/theme/*.tsx"
+		}
+	},
+	"license": "AGPL-3.0-only",
+	"name": "@connected-repo/ui-mui",
 	"peerDependencies": {
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.1",
@@ -28,60 +70,18 @@
 		"react-dom": "^19.2.0",
 		"react-hook-form": "^7.66.0"
 	},
-	"devDependencies": {
-		"@connected-repo/typescript-config": "*",
-		"@types/react": "^19.2.2"
+	"private": true,
+	"repository": "git@github.com:teziapp/connected-repo-starter-oRPC.git",
+	"scripts": {
+		"build": "tsc && tsc-alias",
+		"check-types": "tsc --noEmit",
+		"clean": "rm -rf node_modules && rm -rf dist",
+		"dev": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
+		"format": "biome format . --write",
+		"lint": "biome check .",
+		"typecheck": "tsc --noEmit"
 	},
-	"exports": {
-		"./components/*": {
-			"types": "./src/components/*.tsx",
-			"import": "./dist/components/*.js",
-			"default": "./dist/components/*.js"
-		},
-		"./data-display/*": {
-			"types": "./src/data-display/*.tsx",
-			"import": "./dist/data-display/*.js",
-			"default": "./dist/data-display/*.js"
-		},
-		"./feedback/*": {
-			"types": "./src/feedback/*.tsx",
-			"import": "./dist/feedback/*.js",
-			"default": "./dist/feedback/*.js"
-		},
-		"./form/*": {
-			"types": "./src/form/*.tsx",
-			"import": "./dist/form/*.js",
-			"default": "./dist/form/*.js"
-		},
-		"./icons/*": {
-			"types": "./src/icons/*.ts",
-			"import": "./dist/icons/*.js",
-			"default": "./dist/icons/*.js"
-		},
-		"./layout/*": {
-			"types": "./src/layout/*.tsx",
-			"import": "./dist/layout/*.js",
-			"default": "./dist/layout/*.js"
-		},
-		"./mrt/*": {
-			"types": "./src/mrt/*.tsx",
-			"import": "./dist/mrt/*.js",
-			"default": "./dist/mrt/*.js"
-		},
-		"./navigation/*": {
-			"types": "./src/navigation/*.ts",
-			"import": "./dist/navigation/*.js",
-			"default": "./dist/navigation/*.js"
-		},
-		"./rhf-form/*": {
-			"types": "./src/rhf-form/*.tsx",
-			"import": "./dist/rhf-form/*.js",
-			"default": "./dist/rhf-form/*.js"
-		},
-		"./theme/*": {
-			"types": "./src/theme/*.tsx",
-			"import": "./dist/theme/*.js",
-			"default": "./dist/theme/*.js"
-		}
-	}
+	"sideEffects": false,
+	"type": "module",
+	"version": "1.0.0"
 }

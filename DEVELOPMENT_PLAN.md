@@ -722,14 +722,15 @@ Building a **Scheduled Prompt & Journal** app with:
 
 **Issues:**
 
-**10.1.1: Implement PostgreSQL Full-Text Search**
+**10.1.1: Implement pg_textsearch with Trigram & BM25 Search**
 - Create `journalEntries.search` oRPC endpoint
-- Use PostgreSQL full-text search (tsvector) on content field
+- Use pg_textsearch library (open-sourced) for advanced text search with trigram similarity and BM25 ranking
+- Combine trigram similarity for fuzzy matching and BM25 for keyword relevance scoring
 - Accept filters: keyword, dateFrom, dateTo, limit, offset
 - Filter by userId (user can only search their entries)
 - Return matching entries with highlighted snippets
-- Order by relevance or date
-- Add database indexes for performance
+- Order by relevance (BM25 score) or date
+- Add database indexes for trigram and BM25 performance
 - **Acceptance Criteria:**
   - Search returns relevant results
   - Date range filtering works
