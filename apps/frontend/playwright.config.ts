@@ -1,8 +1,8 @@
+import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig, devices } from "@playwright/test";
-import dotenv from "dotenv";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -125,7 +125,7 @@ export default defineConfig({
       command: "vite preview --mode test --port 5174 --strictPort --host", // Build first, then start preview server
       url: process.env.VITE_USER_APP_URL, // URL to wait for the frontend
       timeout: 120 * 1000, // Max wait for frontend to be ready (e.g., 120 seconds)
-      reuseExistingServer: !isCI, // Reuse if not in CI
+      reuseExistingServer: false, // Always start a new server for frontend
       stdout: "pipe", // Show server logs for debugging
       stderr: "pipe",
       // ignoreHTTPSErrors: true,
