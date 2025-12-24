@@ -210,7 +210,7 @@ Building a **Scheduled Prompt & Journal** app with:
 
 **Issues:**
 
-**3.1.1: Integrate Sentry for Backend**
+**3.1.1: Integrate Sentry for Backend** ✅ COMPLETED
 - Create Sentry account and project
 - Install @sentry/node and @sentry/profiling-node
 - Initialize Sentry in server.ts
@@ -224,10 +224,7 @@ Building a **Scheduled Prompt & Journal** app with:
   - Source maps working
   - Errors visible in Sentry dashboard
 
-**3.1.2: Set up OpenTelemetry Tracing**
-- Install @opentelemetry/sdk-node
-- Install @opentelemetry/instrumentation-http
-- Install @opentelemetry/instrumentation-pg (PostgreSQL)
+**3.1.2: Set up OpenTelemetry Tracing** ✅ COMPLETED
 - Configure trace exporter (Sentry or OTLP)
 - Generate trace IDs for all requests
 - Return trace IDs in response headers (x-trace-id)

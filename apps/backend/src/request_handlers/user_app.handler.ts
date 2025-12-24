@@ -3,6 +3,7 @@ import { isDev, isProd, isStaging } from '@backend/configs/env.config';
 import { userAppRouter } from '@backend/routers/user_app/user_app.router';
 import { orpcErrorParser } from '@backend/utils/errorParser';
 import { logger } from '@backend/utils/logger.utils';
+import { trace } from '@opentelemetry/api';
 import { LoggingHandlerPlugin } from '@orpc/experimental-pino';
 import { ORPCError, onError } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/node';
@@ -33,6 +34,15 @@ export const userAppHandler = new RPCHandler(userAppRouter, {
     new StrictGetMethodPlugin(),
   ],
   interceptors: [
+    ({ request, next }) => {
+      const span = trace.getActiveSpan()
+
+      request.signal?.addEventListener('abort', () => {
+        span?.addEvent('aborted', { reason: String(request.signal?.reason) })
+      })
+
+      return next()
+    },
     // Server-side error logging
     onError((error) => {
       logger.error(error, 'Server error');

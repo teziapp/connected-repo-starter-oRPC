@@ -1,3 +1,5 @@
+import './sentry.sdk';
+
 import { createServer } from 'node:http';
 import { allowedOrigins } from '@backend/configs/allowed_origins.config';
 import { env, isDev, isProd, isStaging, isTest } from '@backend/configs/env.config';
@@ -6,39 +8,45 @@ import { openApiHandler } from '@backend/request_handlers/open_api.handler';
 import { userAppHandler } from '@backend/request_handlers/user_app.handler';
 import { handleServerClose } from '@backend/utils/graceful_shutdown.utils';
 import { logger } from '@backend/utils/logger.utils';
+import { trace } from '@opentelemetry/api';
 
 logger.info({ isDev, isProd, isStaging, isTest }, "Environment:");
 logger.info(allowedOrigins, "Allowed Origins:");
 logger.info(env.ALLOWED_ORIGINS, "ALLOWED_ORIGINS env:");
 
 try {
-
   const server = createServer(async (req, res) => {
+     // Get current span and add trace ID to response headers
+     const currentSpan = trace.getActiveSpan();
+     if (currentSpan) {
+       const spanContext = currentSpan.spanContext();
+       res.setHeader('x-trace-id', spanContext.traceId);
+     }
 
-    // Handle better-auth routes first (/api/auth/*)
-    if (req.url?.startsWith("/api/auth")) {
-      return betterAuthHandler.handle(req, res);
-      // TODO: There is a better way of doing this. Needs research.
-      // return auth.handler(req);
-    }
+     // Handle better-auth routes first (/api/auth/*)
+     if (req.url?.startsWith("/api/auth")) {
+       return betterAuthHandler.handle(req, res);
+       // TODO: There is a better way of doing this. Needs research.
+       // return auth.handler(req);
+     }
 
-    // Handle OpenAPI routes (/api/*)
-    let result = await openApiHandler.handle(req, res, {
-      context: {},
-      prefix: '/api',
-    });
+     // Handle OpenAPI routes (/api/*)
+     let result = await openApiHandler.handle(req, res, {
+       context: {},
+       prefix: '/api',
+     });
 
-      // Handle oRPC routes
-    result = await userAppHandler.handle(req, res, {
-      context: {},
-      prefix: '/user-app',
-    })
+       // Handle oRPC routes
+     result = await userAppHandler.handle(req, res, {
+       context: {},
+       prefix: '/user-app',
+     })
 
-    if (!result.matched) {
-      res.statusCode = 404
-      res.end('No procedure matched')
-    }
-  })
+     if (!result.matched) {
+       res.statusCode = 404
+       res.end('No procedure matched')
+     }
+   })
 
   // Configure server to close idle connections
   server.keepAliveTimeout = 5000; // 5 seconds

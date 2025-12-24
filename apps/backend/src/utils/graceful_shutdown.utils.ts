@@ -1,9 +1,14 @@
+import type { IncomingMessage, Server, ServerResponse } from "node:http";
 import { logger } from "@backend/utils/logger.utils";
-import { IncomingMessage, Server, ServerResponse } from "node:http";
+import { otelNodeSdk, recordUncaughtError } from "../sentry.sdk";
 
 export const handleServerClose = (server: Server<typeof IncomingMessage, typeof ServerResponse>) => {
-  const gracefulShutdown = (signal: string) => {
+  const gracefulShutdown = async (signal: string) => {
       logger.info({ signal }, 'Received shutdown signal, closing server gracefully...');
+
+      await otelNodeSdk.shutdown().catch((error) => {
+        logger.error('Error shutting down Sentry SDK', error);
+      });
 
       // Stop accepting new connections
       server.close(() => {
@@ -31,11 +36,13 @@ export const handleServerClose = (server: Server<typeof IncomingMessage, typeof 
 
     // Handle uncaught errors
     process.on('uncaughtException', (error) => {
+      recordUncaughtError('uncaughtException', error);
       logger.error({ error }, 'Uncaught exception');
       gracefulShutdown('uncaughtException');
     });
 
     process.on('unhandledRejection', (reason, promise) => {
+      recordUncaughtError('unhandledRejection', reason);
       logger.error({ reason, promise }, 'Unhandled rejection');
       gracefulShutdown('unhandledRejection');
     });

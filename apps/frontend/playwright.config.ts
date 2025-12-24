@@ -1,8 +1,8 @@
-import { defineConfig, devices } from "@playwright/test";
-import dotenv from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
