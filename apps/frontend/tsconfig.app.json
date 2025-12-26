@@ -19,7 +19,8 @@
 	],
 	"extends": "@connected-repo/typescript-config/vite.json",
 	"include": [
-		"src"
+		"src",
+		"src/vite-env.d.ts"
 	],
 	"typeRoots": [
 		"../../node_modules/@types",
