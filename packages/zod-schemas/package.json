@@ -1,9 +1,11 @@
 {
 	"author": "Balkrishna Agarwal",
 	"description": "Common Zod Schemas to be used everywhere",
+	"dependencies": {
+		"@faker-js/faker": "^10.1.0"
+	},
 	"devDependencies": {
 		"@connected-repo/typescript-config": "*",
-		"@faker-js/faker": "^10.1.0",
 		"tsc-alias": "^1.8.16",
 		"typescript": "^5.9.3",
 		"zod": "^4.1.12"
