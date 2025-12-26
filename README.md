@@ -176,8 +176,15 @@ yarn test:e2e -b       # Build before testing (UI mode)
 
 **Docker (frontend changes automatically excluded via `turbo prune`):**
 ```bash
+# Local build (uses layer cache automatically)
 docker build -f apps/backend/Dockerfile -t backend:latest .
 docker-compose up
+
+# CI/CD: Enable BuildKit cache in Coolify to skip rebuilds on frontend-only changes
+# Without cache, every deployment rebuilds from scratch even if only frontend changed
+docker buildx build --cache-from type=registry,ref=registry/backend:cache \
+  --cache-to type=registry,ref=registry/backend:cache,mode=max \
+  -f apps/backend/Dockerfile -t backend:latest .
 ```
 
 **Standard Production:**

@@ -23,6 +23,7 @@ DEVELOPMENT_PLAN.md
 *.swp
 *.swo
 *~
+.opencode
 
 # Tests
 coverage
@@ -54,3 +55,6 @@ Thumbs.db
 tmp
 temp
 *.tmp
+
+# Frontend files
+netlify.toml

@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG NODE_VERSION=22
 FROM node:${NODE_VERSION}-slim AS base
 
@@ -25,7 +26,8 @@ COPY --from=prepare /app/out/json/ .
 COPY --from=prepare /app/out/yarn.lock ./yarn.lock
 
 # Install dependencies
-RUN yarn install --frozen-lockfile --production=false
+RUN --mount=type=cache,target=/root/.yarn \
+    yarn install --frozen-lockfile --production=false
 
 # Build the project and its dependencies
 # This layer is cached unless backend/zod-schemas/typescript-config source changes
@@ -40,7 +42,8 @@ COPY --from=prepare /app/out/full/ .
 # ENV TURBO_TOKEN=$TURBO_TOKEN
 
 # Run build
-RUN npx turbo run build --filter=@connected-repo/backend
+RUN --mount=type=cache,target=/app/node_modules/.cache/turbo \
+    npx turbo run build --filter=@connected-repo/backend
 
 # Stage 3: Installer - Install only production dependencies
 FROM base AS installer
@@ -54,7 +57,8 @@ COPY --from=prepare /app/out/json/ .
 COPY --from=prepare /app/out/yarn.lock ./yarn.lock
 
 # Install only production dependencies
-RUN yarn install --frozen-lockfile --production=true
+RUN --mount=type=cache,target=/root/.yarn \
+    yarn install --frozen-lockfile --production=true
 
 # Stage 4: Runner - Production runtime
 FROM node:${NODE_VERSION}-alpine AS runner
