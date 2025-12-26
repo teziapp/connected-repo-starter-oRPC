@@ -2,6 +2,8 @@ ARG NODE_VERSION=22
 FROM node:${NODE_VERSION}-slim AS base
 
 # Stage 1: Prepare - Prune the monorepo to only include backend and its dependencies
+# This stage automatically excludes frontend changes via turbo prune
+# Only backend, zod-schemas, and typescript-config packages are included
 FROM base AS prepare
 WORKDIR /app
 RUN corepack enable && corepack prepare yarn@1.22.22 --activate
@@ -17,6 +19,8 @@ WORKDIR /app
 RUN corepack enable && corepack prepare yarn@1.22.22 --activate
 
 # First install dependencies (as they change less often)
+# This layer is cached unless package.json or yarn.lock changes
+# Frontend changes DO NOT invalidate this cache layer
 COPY --from=prepare /app/out/json/ .
 COPY --from=prepare /app/out/yarn.lock ./yarn.lock
 
@@ -24,9 +28,11 @@ COPY --from=prepare /app/out/yarn.lock ./yarn.lock
 RUN yarn install --frozen-lockfile --production=false
 
 # Build the project and its dependencies
+# This layer is cached unless backend/zod-schemas/typescript-config source changes
+# Frontend changes DO NOT invalidate this cache layer (excluded by turbo prune)
 COPY --from=prepare /app/out/full/ .
 
-# Uncomment and use build args to enable remote caching
+# Enable Turbo remote caching for faster builds (optional but recommended)
 # ARG TURBO_TEAM
 # ENV TURBO_TEAM=$TURBO_TEAM
 

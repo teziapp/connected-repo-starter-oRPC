@@ -173,6 +173,14 @@ yarn test:e2e -b       # Build before testing (UI mode)
 ```
 
 ### Production
+
+**Docker (frontend changes automatically excluded via `turbo prune`):**
+```bash
+docker build -f apps/backend/Dockerfile -t backend:latest .
+docker-compose up
+```
+
+**Standard Production:**
 ```bash
 yarn build
 yarn start

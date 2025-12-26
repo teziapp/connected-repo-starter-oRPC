@@ -1,6 +1,9 @@
 {
 	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
+		"esModuleInterop": true,
+		"moduleResolution": "bundler",
 		"paths": {
 			"@backend/*": [
 				"../backend/src/*"
