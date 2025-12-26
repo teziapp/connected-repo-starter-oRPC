@@ -37,7 +37,7 @@
 	"private": true,
 	"repository": "git@github.com:teziapp/connected-repo-starter-oRPC.git",
 	"scripts": {
-		"build": "yarn vite build",
+		"build": "npx vite build",
 		"build:debug": "tsc -b tsconfig.app.json && vite build --debug",
 		"check-types": "tsc --noEmit",
 		"clean": "rm -rf node_modules && rm -rf dist",
