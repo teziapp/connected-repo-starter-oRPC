@@ -19,6 +19,9 @@ WORKDIR /app
 # Enable Corepack and set up Yarn
 RUN corepack enable && corepack prepare yarn@1.22.22 --activate
 
+# Install TypeScript and tsc-alias globally for build
+RUN yarn global add typescript@5.9.3 tsc-alias@1.8.16
+
 # First install dependencies (as they change less often)
 # This layer is cached unless package.json or yarn.lock changes
 # Frontend changes DO NOT invalidate this cache layer
