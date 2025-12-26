@@ -70,8 +70,11 @@ COPY --from=builder --chown=nodejs:nodejs /app/apps/backend/package.json ./apps/
 COPY --from=builder --chown=nodejs:nodejs /app/packages/zod-schemas/dist ./packages/zod-schemas/dist
 COPY --from=builder --chown=nodejs:nodejs /app/packages/typescript-config ./packages/typescript-config
 
-# Install curl for the healthcheck
+
 USER root
+# Remove declaration files from migrations directory to prevent rake-db errors
+RUN find ./apps/backend/dist/db/migrations -type f \( -name "*.d.ts" -o -name "*.d.ts.map" \) -delete
+# Install curl for the healthcheck
 RUN apk add --no-cache curl
 USER nodejs
 

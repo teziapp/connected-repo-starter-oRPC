@@ -6,7 +6,8 @@
 		"paths": {
 			"@frontend/*": ["./src/*"],
 			"@backend/*": ["../backend/src/*"]
-		}
+		},
+		"types": ["vite/client"]
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.tsx", "e2e/**/*", "src/utils/env_validation_vite_plugin.utils.ts"]
