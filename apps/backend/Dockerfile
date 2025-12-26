@@ -78,6 +78,9 @@ USER nodejs
 # Set environment variables
 ENV NODE_ENV=production
 
+# Set working directory to the backend app
+WORKDIR /app/apps/backend
+
 # Expose the port (adjust if your backend uses a different port)
 EXPOSE 3000
 
@@ -86,4 +89,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/health | grep -q '200' || exit 1
 
 # Run migrations then start the backend server
-CMD ["sh", "-c", "cd apps/backend && node dist/db/db_script.js up && node dist/server.js"]
+CMD ["sh", "-c", "node dist/db/db_script.js up && node dist/server.js"]
