@@ -1,5 +1,5 @@
 [build]
-	command = "yarn install --frozen-lockfile && npx turbo run build --filter=@connected-repo/frontend"
+	command = "npx turbo run build --filter=@connected-repo/frontend"
   publish = "apps/frontend/dist"
 
 [build.environment]
