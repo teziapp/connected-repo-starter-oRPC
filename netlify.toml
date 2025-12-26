@@ -1,6 +1,6 @@
 [build]
 	base = "/"
-	command = "yarn install && yarn turbo run build --filter=@connected-repo/frontend"
+	command = "yarn install && npx turbo run build --filter=@connected-repo/frontend"
 	publish = "apps/frontend/dist"
 
 [build.environment]
