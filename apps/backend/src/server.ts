@@ -54,7 +54,7 @@ try {
 
     server.listen(
       env.PORT,
-      '127.0.0.1',
+      (isProd || isStaging) ? '0.0.0.0' : '127.0.0.1',
       () => {
         if (process.send) {
           process.send("ready"); // ✅ Let PM2 know the app is ready

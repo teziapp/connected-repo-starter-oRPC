@@ -1,0 +1,7 @@
+[build]
+	base = "/"
+	command = "yarn install && yarn turbo run build --filter=@connected-repo/frontend"
+	publish = "apps/frontend/dist"
+
+[build.environment]
+	NODE_VERSION = "22"
