@@ -86,4 +86,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/health | grep -q '200' || exit 1
 
 # Run migrations then start the backend server
-CMD ["sh", "-c", "yarn db up && node apps/backend/dist/server.js"]
+CMD ["sh", "-c", "cd apps/backend && node dist/db/db_script.js up && node dist/server.js"]

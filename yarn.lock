@@ -3184,7 +3184,7 @@ make-dir@^4.0.0:
   dependencies:
     semver "^7.5.3"
 
-material-react-table@^3.2.1:
+material-react-table@3.2.1, material-react-table@^3.2.1:
   version "3.2.1"
   resolved "https://registry.npmjs.org/material-react-table/-/material-react-table-3.2.1.tgz"
   integrity sha512-sQtTf7bETpkPN2Hm5BVtz89wrfXCVQguz6XlwMChSnfKFO5QCKAJJC5aSIKnUc3S0AvTz/k/ILi00FnnY1Gixw==
