@@ -229,6 +229,7 @@ Building a **Scheduled Prompt & Journal** app with:
 - Generate trace IDs for all requests
 - Return trace IDs in response headers (x-trace-id)
 - Link traces to Sentry errors
+- **Implemented:** Renamed sentry.sdk.ts to otel.sdk.ts, added @kubiks/otel-better-auth for automatic Better Auth tracing, created record-message.otel.utils.ts for context-aware error/message recording, updated graceful shutdown to use OTEL utilities
 - **For Capacitor/Mobile:** Evaluate options:
   - **last9.io**: Check if they support Capacitor - if yes, use their SDK
   - **Alternative libraries**: @opentelemetry/api + capacitor-opentelemetry-plugin, or Sentry's Capacitor SDK
@@ -552,12 +553,12 @@ Building a **Scheduled Prompt & Journal** app with:
   - Build failures block merge
   - Runs complete in <5 minutes
 
-**7.1.2: Set up Coolify Deployment**
+**7.1.2: Set up Coolify Deployment** ✅ COMPLETED
 - Install Coolify on server (VPS/cloud)
 - Create Coolify project with shared Supabase database
 - Configure environment variables
 - Create frontend deployment (static site with PM2 scaling)
-- Create backend deployment (Node.js app with PM2 scaling)
+- Create backend deployment (Node.js app with PM2 scaling) - Dockerfile updated to handle Yarn workspaces properly
 - Configure custom domain
 - Add SSL/TLS certificates
 - Maximize shared resources (one DB instance for all projects)
@@ -570,20 +571,23 @@ Building a **Scheduled Prompt & Journal** app with:
   - HTTPS enabled
   - Resource sharing optimized
 
-**7.1.3: Create Deployment Workflow**
-- Create .github/workflows/deploy.yml
-- Trigger on push to main (after CI passes)
-- Deploy frontend to Coolify
-- Deploy backend to Coolify
-- Run database migrations
-- Test deployment health
-- Rollback on failure
+**7.1.3: Configure Smart Deployment (Build Only on Relevant Changes)**
+- Configure Coolify to build/deploy backend only when backend files change
+- Configure Coolify to build/deploy frontend only when frontend files change
+- Backend Dockerfile already uses `turbo prune @connected-repo/backend --docker` to exclude frontend
+- Frontend Netlify config already filters to `@connected-repo/frontend`
+- Enable Docker BuildKit cache in Coolify for layer caching:
+  - Without cache: every commit rebuilds from scratch (even frontend-only changes trigger full backend rebuild)
+  - With cache: frontend-only changes reuse cached backend layers (no rebuild)
+- Paths to watch:
+  - **Backend:** `apps/backend/`, `packages/zod-schemas/`, `packages/typescript-config/`, `yarn.lock`, `package.json`, `turbo.json`, `docker-compose.yml`
+  - **Frontend:** `apps/frontend/`, `packages/ui-mui/`, `packages/zod-schemas/`, `packages/typescript-config/`, `yarn.lock`, `package.json`, `netlify.toml`
 - **Acceptance Criteria:**
-  - Deployment automated
-  - Migrations run before deployment
-  - Health check verifies deployment
-  - Rollback mechanism works
-  - Deployment status visible
+  - Backend doesn't rebuild on frontend-only changes (with BuildKit cache)
+  - Frontend doesn't rebuild on backend-only changes
+  - Docker layer caching enabled in Coolify
+  - Deployments skip unchanged services
+  - Build time reduced by 70% for single-app changes
 
 **7.1.4: Set up Sentry Releases & Source Maps in CI/CD**
 - Install Sentry CLI in CI environment

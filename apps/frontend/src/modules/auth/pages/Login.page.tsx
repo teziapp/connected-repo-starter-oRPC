@@ -10,7 +10,8 @@ import { Stack } from "@connected-repo/ui-mui/layout/Stack";
 import { userCreateFixture } from "@connected-repo/zod-schemas/user.fixture";
 import { env, isTest } from "@frontend/configs/env.config";
 import { authClient } from "@frontend/utils/auth.client";
-import { useState } from "react";
+import * as Sentry from "@sentry/react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 
 export const LoginPage = () => {
@@ -19,9 +20,32 @@ export const LoginPage = () => {
 	const [searchParams] = useSearchParams();
 	const error = searchParams.get("error");
 
+	// Track OAuth errors in Sentry when they occur
+	useEffect(() => {
+		if (error) {
+			const errorMessage = decodeURIComponent(error);
+			
+			// Capture OAuth error in Sentry for monitoring
+			Sentry.captureMessage(`OAuth Error: ${errorMessage}`, {
+				level: "warning",
+				tags: {
+					error_type: "oauth_error_frontend",
+					error_code: error,
+				},
+				contexts: {
+					auth: {
+						error_message: errorMessage,
+						location: "login_page",
+					},
+				},
+			});
+		}
+	}, [error]);
+
    const handleGoogleLogin = async () => {
     setIsLoading(true);
  		let data: { url?: string } | undefined;
+		const callbackURL = `${env.VITE_USER_APP_URL}/dashboard`;
 		
     try {
 			if(isTest){
@@ -35,6 +59,7 @@ export const LoginPage = () => {
 					...dummyUser,
 					image: dummyUser.image ?? undefined,
 					password,
+					callbackURL
 				}, {
 					throw: true
 				});
@@ -43,14 +68,16 @@ export const LoginPage = () => {
 					email: dummyUser.email,
 					password,
 					rememberMe: true,
-					callbackURL: `${env.VITE_USER_APP_URL}/dashboard`
+					callbackURL,
 				}, {
 					throw: true
 				});
 			} else {    
 				data = await authClient.signIn.social({
 					provider: 'google',
-					callbackURL: window.location.origin,
+					callbackURL,
+					errorCallbackURL: `${env.VITE_USER_APP_URL}/auth/error`,
+					// newUserCallbackURL: "/welcome",
 				}, {
 					throw: true,
 				});
@@ -147,7 +174,11 @@ export const LoginPage = () => {
 										>
 											{error === "oauth_failed"
 												? "Authentication failed. Please try again."
-												: "An error occurred during login. Please try again."}
+												: error === "state_mismatch"
+													? "Session expired. Please try signing in again."
+													: error === "callback_error"
+														? "OAuth callback error. Please try again."
+														: `An error occurred: ${decodeURIComponent(error)}`}
 										</Alert>
 									</Fade>
 								)}

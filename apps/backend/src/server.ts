@@ -1,4 +1,4 @@
-import './sentry.sdk';
+import "./otel.sdk";
 
 import { createServer } from 'node:http';
 import { allowedOrigins } from '@backend/configs/allowed_origins.config';
@@ -8,6 +8,7 @@ import { openApiHandler } from '@backend/request_handlers/open_api.handler';
 import { userAppHandler } from '@backend/request_handlers/user_app.handler';
 import { handleServerClose } from '@backend/utils/graceful_shutdown.utils';
 import { logger } from '@backend/utils/logger.utils';
+import { recordErrorOtel } from "@backend/utils/record-message.otel.utils";
 import { trace } from '@opentelemetry/api';
 
 logger.info({ isDev, isProd, isStaging, isTest }, "Environment:");
@@ -28,6 +29,54 @@ try {
        return betterAuthHandler.handle(req, res);
        // TODO: There is a better way of doing this. Needs research.
        // return auth.handler(req);
+     }
+
+     // Handle root path requests
+     if (req.url === '/' || req.url?.startsWith('/?')) {
+       const url = new URL(req.url, `http://${req.headers.host}`);
+       const errorParam = url.searchParams.get('error');
+       
+      // If there's an error parameter, it's an OAuth error redirect that shouldn't be here
+      if (errorParam) {
+        const errorMessage = `OAuth error redirected to backend: ${decodeURIComponent(errorParam)}`;
+        const oauthError = new Error(errorMessage);
+        
+        logger.error({ error: errorParam, url: req.url }, errorMessage);
+        
+        // Record error using common utility
+        recordErrorOtel({
+          spanName: 'oauth.error.redirect',
+          error: oauthError,
+          level: 'error',
+          tags: {
+            error_type: 'oauth_redirect_to_backend',
+          },
+          attributes: {
+            'error.message': errorParam,
+            'request.url': req.url || '',
+            'request.method': req.method || '',
+          },
+        });
+         
+         // Redirect to frontend
+         const redirectUrl = `${env.WEBAPP_URL}${url.search}?error=${encodeURIComponent(errorParam)}`;
+         res.statusCode = 302;
+         res.setHeader('Location', redirectUrl);
+         res.end();
+         return;
+       }
+       
+       // Root path without errors - show basic health check
+       res.statusCode = 200;
+       res.setHeader('Content-Type', 'application/json');
+       res.end(JSON.stringify({
+         status: 'ok',
+         service: env.VITE_OTEL_SERVICE_NAME,
+         environment: env.NODE_ENV,
+         timestamp: new Date().toISOString(),
+         message: 'Server is running',
+       }));
+       return;
      }
 
      // Handle OpenAPI routes (/api/*)
@@ -54,7 +103,7 @@ try {
 
     server.listen(
       env.PORT,
-      '127.0.0.1',
+      (isProd || isStaging) ? '0.0.0.0' : '127.0.0.1',
       () => {
         if (process.send) {
           process.send("ready"); // ✅ Let PM2 know the app is ready

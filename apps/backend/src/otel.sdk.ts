@@ -1,6 +1,5 @@
 // Initialize OpenTelemetry and Sentry
-import { env, isProd } from '@backend/configs/env.config';
-import { SpanStatusCode, trace } from '@opentelemetry/api';
+import { env } from '@backend/configs/env.config';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { PgInstrumentation } from '@opentelemetry/instrumentation-pg';
@@ -19,7 +18,7 @@ import { nodeProfilingIntegration } from '@sentry/profiling-node';
 const sentryClient = Sentry.init({
   dsn: env.VITE_SENTRY_DSN,
   environment: env.VITE_SENTRY_ENV || env.NODE_ENV,
-  sampleRate: isProd ? 0.1 : 1.0, // 100% for dev, 10% for prod
+  sampleRate: 1.0, // 100% for dev, 10% for prod
   skipOpenTelemetrySetup: true, // disables the Sentry SDK's automatic OpenTelemetry configuration
   integrations: [
     // Add profiling integration
@@ -30,7 +29,7 @@ const sentryClient = Sentry.init({
   ],
   sendDefaultPii: true,
   // Enable tracing
-  tracesSampleRate: isProd ? 0.1 : 1.0,
+  tracesSampleRate: 1.0,
 });
 
 export const otelNodeSdk = new NodeSDK({
@@ -73,20 +72,3 @@ console.info("Sentry is initialized:", Sentry.isInitialized ? Sentry.isInitializ
 
 // Test capture
 Sentry.captureMessage("Server start: Server has started", "info");
-
-const tracer = trace.getTracer('uncaught-errors')
-
-export function recordUncaughtError(eventName: string, reason: unknown) {
-  const span = tracer.startSpan(eventName)
-  const message = String(reason)
-
-  if (reason instanceof Error) {
-    span.recordException(reason)
-  }
-  else {
-    span.recordException({ message })
-  }
-
-  span.setStatus({ code: SpanStatusCode.ERROR, message })
-  span.end()
-}

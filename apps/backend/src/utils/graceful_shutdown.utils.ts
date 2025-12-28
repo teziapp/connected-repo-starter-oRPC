@@ -1,6 +1,7 @@
 import type { IncomingMessage, Server, ServerResponse } from "node:http";
+import { otelNodeSdk } from "@backend/otel.sdk";
 import { logger } from "@backend/utils/logger.utils";
-import { otelNodeSdk, recordUncaughtError } from "../sentry.sdk";
+import { recordErrorOtel } from "@backend/utils/record-message.otel.utils";
 
 export const handleServerClose = (server: Server<typeof IncomingMessage, typeof ServerResponse>) => {
   const gracefulShutdown = async (signal: string) => {
@@ -36,13 +37,23 @@ export const handleServerClose = (server: Server<typeof IncomingMessage, typeof 
 
     // Handle uncaught errors
     process.on('uncaughtException', (error) => {
-      recordUncaughtError('uncaughtException', error);
+      recordErrorOtel({
+        spanName: 'uncaughtException',
+        error,
+        level: 'error',
+        tags: { error_type: 'uncaught_exception' },
+      });
       logger.error({ error }, 'Uncaught exception');
       gracefulShutdown('uncaughtException');
     });
 
     process.on('unhandledRejection', (reason, promise) => {
-      recordUncaughtError('unhandledRejection', reason);
+      recordErrorOtel({
+        spanName: 'unhandledRejection',
+        error: reason instanceof Error ? reason : new Error(String(reason)),
+        level: 'error',
+        tags: { error_type: 'unhandled_rejection' },
+      });
       logger.error({ reason, promise }, 'Unhandled rejection');
       gracefulShutdown('unhandledRejection');
     });

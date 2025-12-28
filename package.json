@@ -10,7 +10,6 @@
 		"@biomejs/biome": "^2.3.10",
 		"concurrently": "^9.2.1",
 		"knip": "^5.30.6",
-		"tsc": "^2.0.4",
 		"tsc-alias": "^1.8.16",
 		"turbo": "^2.5.8",
 		"typescript": "5.9.3"
@@ -24,7 +23,7 @@
 	"private": true,
 	"repository": "git@github.com:teziapp/connected-repo-starter-oRPC.git",
 	"scripts": {
-		"build": "yarn env:sync && turbo run build",
+		"build": "npx turbo run build",
 		"check-types": "turbo run check-types",
 		"clean": "turbo run clean && rm -rf node_modules && rm -rf .yarn/cache && yarn cache clean",
 		"db": "turbo db --",
