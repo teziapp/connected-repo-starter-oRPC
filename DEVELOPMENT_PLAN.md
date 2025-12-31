@@ -37,9 +37,9 @@ Building a **Scheduled Prompt & Journal** app with:
 1. **Testing Infrastructure (P0):** Vitest setup for backend/frontend with database integration
 2. **OpenTelemetry & RUM (P0):** Error tracking, performance monitoring, distributed tracing
 3. **PWA Setup (P0):** Service workers, manifest, offline support, install prompt
-4. **Capacitor Setup (P0):** iOS/Android native app configuration (right after PWA)
-5. **Notifications (P0):** Email notifications, push notifications (after PWA/Capacitor for testing)
-6. **CI/CD & DevOps (P0):** GitHub Actions, Coolify deployment setup
+4. **CI/CD & DevOps (P0):** GitHub Actions, Coolify deployment setup
+5. **Capacitor Setup (P0):** iOS/Android native app configuration (right after PWA)
+6. **Notifications (P0):** Email notifications, push notifications (after PWA/Capacitor for testing)
 7. **Payments & Subscriptions (P0):** Stripe integration ($5/month, $50/year)
 8. **Offline-First (V1):** Make app offline-first, free version offline-only, paid gets cloud sync
 9. **Search Functionality (V1):** Backend search implementation
